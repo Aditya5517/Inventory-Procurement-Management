@@ -1,0 +1,12 @@
+# Backend
+inventory-procurement-system-backend/target/
+inventory-procurement-system-backend/.idea/
+
+# Frontend
+inventory-procurement-system-frontend/node_modules/
+inventory-procurement-system-frontend/.next/
+inventory-procurement-system-frontend/.env.local
+
+# General
+.env
+*.log
