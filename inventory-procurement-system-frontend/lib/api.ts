@@ -10,22 +10,41 @@ export async function apiRequest(
       ? localStorage.getItem("token")
       : null;
 
-  const response = await fetch(
-    `${API_BASE_URL}${endpoint}`,
-    {
+  async function makeRequest() {
+    return fetch(`${API_BASE_URL}${endpoint}`, {
       ...options,
-
       headers: {
         "Content-Type": "application/json",
-
         ...(token && {
           Authorization: `Bearer ${token}`,
         }),
-
         ...options.headers,
       },
+    });
+  }
+
+  let response;
+
+  try {
+    response = await makeRequest();
+    if (
+      response.status === 502 ||
+      response.status === 503 ||
+      response.status === 504
+    ) {
+      await new Promise((resolve) =>
+        setTimeout(resolve, 3000)
+      );
+
+      response = await makeRequest();
     }
-  );
+  } catch {
+    await new Promise((resolve) =>
+      setTimeout(resolve, 3000)
+    );
+
+    response = await makeRequest();
+  }
 
   if (!response.ok) {
     const error = await response.text();
